@@ -3,6 +3,7 @@ window.addEventListener('load', function(){
     *
     */
     initVariables(); //Loads global variables used throughout the page
+    initWebCamera();
     // startTensorflow(); //This is where the magic happens after things are initiated
 });
 
@@ -13,24 +14,13 @@ function initVariables(){
     */
     // get input img html element
     bernsky = document.getElementById('bern');
+    webcamera = document.getElementById("webcam");
     //create canvas context 
     canvas = document.getElementById("myCanvas");
     ctx = canvas.getContext("2d");
     posenet = window.posenet;
     ctx.fillStyle = "#00FFFF"; 
-    initWebCamera();
-}
 
-
-function startTensorflow(){
-    /* Start tensorflow function and doing cool stuff
-    *
-    */
-
-    // show canvas img to be drawn over
-    ctx.drawImage(bernsky, 0, 0, 257, 200);  // -- For whatever reason ctx.drawImage was not working for me.
-
-    // instantiate the posenet model 
     posenet_1 = initPosenet(
         architect = 'MobileNetV1',
         output_stride = 16,
@@ -40,10 +30,26 @@ function startTensorflow(){
         },
         multiply = 0.75,
     );
+    
+    webcamera.addEventListener('loadeddata', function(){
+        window.requestAnimationFrame(startTensorflow);
+    }, false);
+    window.requestAnimationFrame(startTensorflow);
+}
+
+
+function startTensorflow(){
+    /* Start tensorflow function and doing cool stuff
+    *
+    */
+
+    // show canvas img to be drawn over
+    ctx.drawImage(webcamera, 0, 0, 257, 200);  // -- For whatever reason ctx.drawImage was not working for me.
+
     // load an image into the posenet and process data
     output_pose = loadPosenet(
         posenet_1,
-        img = bernsky
+        img = webcamera
     );
 
     // draw the output on a canvas

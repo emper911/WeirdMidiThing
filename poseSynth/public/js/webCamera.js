@@ -3,6 +3,8 @@ function initWebCamera(){
         .then(getWebcamList)
         .then(loadDropDownMenu)
         .then(onWebcamSelected);
+        // .then(gotMedia);
+    
 }
 
 
@@ -32,6 +34,7 @@ function getWebcamList(){
     });
 }
 
+
 function loadDropDownMenu(webcams){
     let dropdown = document.getElementById("webcam-dropdown");
 
@@ -44,6 +47,7 @@ function loadDropDownMenu(webcams){
     dropdown.addEventListener('change', onWebcamSelected);
 
 }
+
 
 function onWebcamSelected() {
 
@@ -68,8 +72,24 @@ function onWebcamSelected() {
         .catch(function (err0r) {
             console.log("Something went wrong!");
         });
-
 }
+
+// function gotMedia(mediaStream) {
+//     const mediaStreamTrack = mediaStream.getVideoTracks()[0];
+//     const imageCapture = new ImageCapture(mediaStreamTrack);
+
+//     // ...
+//     imageCapture.grabFrame()
+//         .then(imageBitmap => {
+//             canvas.width = imageBitmap.width;
+//             canvas.height = imageBitmap.height;
+//             loadPosenet(posenet_1, img)
+//             ctx.drawImage(imageBitmap, 0, 0);
+//         })
+//         .catch(error => console.error('grabFrame() error:', error));
+    
+//     console.log(imageCapture);
+// }
 
 
 function disconnectVideoStream() {
