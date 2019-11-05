@@ -102,5 +102,7 @@ function disconnectVideoStream() {
     videoElement.srcObject.getTracks().forEach(track => track.stop());
     videoElement.srcObject = undefined;
     videoElement.src = "";
+    // startTensorflow();
+    window.cancelAnimationFrame(animation_id);
 
 }

@@ -30,11 +30,12 @@ function initVariables(){
         },
         multiply = 0.75,
     );
-    
+
     webcamera.addEventListener('loadeddata', function(){
-        window.requestAnimationFrame(startTensorflow);
+        startTensorflow();
+        
     }, false);
-    window.requestAnimationFrame(startTensorflow);
+    
 }
 
 
@@ -42,20 +43,26 @@ function startTensorflow(){
     /* Start tensorflow function and doing cool stuff
     *
     */
-
-    // show canvas img to be drawn over
+   
+   // show canvas img to be drawn over
+    ctx.clearRect(0, 0, 257, 200);
+    ctx.save();
     ctx.drawImage(webcamera, 0, 0, 257, 200);  // -- For whatever reason ctx.drawImage was not working for me.
-
+    ctx.restore();
     // load an image into the posenet and process data
     output_pose = loadPosenet(
         posenet_1,
         img = webcamera
     );
-
+        
     // draw the output on a canvas
+    ctx.save();
     drawOnCanvas(
-        net_output = output_pose
+           net_output = output_pose
     );
+           
+    ctx.restore();
+    animation_id = window.requestAnimationFrame(startTensorflow);
 }
 
 
@@ -96,9 +103,11 @@ function drawOnCanvas(net_output) {
         // for each keypoint, draw a dot on the canvas if confidence score is above threshold
         for (i = 0; i < 17; i++) {
             if (pose.keypoints[i].score > 0.40) {
+                // ctx.restore();
                 ctx.beginPath();
                 ctx.arc(pose.keypoints[i].position.x, pose.keypoints[i].position.y, 4, 0, 2 * Math.PI);
                 ctx.fill();
+                // ctx.save();
                 console.log(pose.keypoints[i].part);
             }
         }
