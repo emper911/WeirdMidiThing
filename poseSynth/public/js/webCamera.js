@@ -57,14 +57,17 @@ function onWebcamSelected() {
     let constraints = {
         video: { 
             deviceId: { exact: id },
-            // width: 1920,
-            // height: 1080,
+            width: 257,
+            height: 200,
         },
     };
 
     // Attach the webcam feed to a video element so we can view it
     return navigator.mediaDevices.getUserMedia(constraints)
-        .then(stream => videoElement.srcObject = stream);
+        .then(stream => videoElement.srcObject = stream)
+        .catch(function (err0r) {
+            console.log("Something went wrong!");
+        });
 
 }
 

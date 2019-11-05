@@ -15,9 +15,9 @@
 <body>
     <p><select name="webcam-dropdown" id="webcam-dropdown"></select></p>
     <img id='bern' src='./images/bernieboi.jpg' width="257" height="200" />
-    <video id="webcam"></video>
+    <video id="webcam" autoplay="true"></video>
     <canvas id="myCanvas" width="257" height="200"></canvas>
-
+    <button id="stop" onclick="disconnectVideoStream()">Stop Video</button>
 
 
 </body>

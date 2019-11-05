@@ -1,8 +1,8 @@
 #webcam, #capture {
     display: inline-block;
     border: solid 1px black;
-    width: 1080px;
-    height: 900px;
+    width: 257px;
+    height: 200px;
 }
 #webcam-dropdown { 
     display: block; 
