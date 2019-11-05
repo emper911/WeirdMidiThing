@@ -3,7 +3,7 @@ window.addEventListener('load', function(){
     *
     */
     initVariables(); //Loads global variables used throughout the page
-    startTensorflow(); //This is where the magic happens after things are initiated
+    // startTensorflow(); //This is where the magic happens after things are initiated
 });
 
 
@@ -11,7 +11,6 @@ function initVariables(){
     /* Initating global variables for now
     *
     */
-
     // get input img html element
     bernsky = document.getElementById('bern');
     //create canvas context 
@@ -19,11 +18,13 @@ function initVariables(){
     ctx = canvas.getContext("2d");
     posenet = window.posenet;
     ctx.fillStyle = "#00FFFF"; 
+    initWebCamera();
 }
 
 
 function startTensorflow(){
     /* Start tensorflow function and doing cool stuff
+    *
     */
 
     // show canvas img to be drawn over
