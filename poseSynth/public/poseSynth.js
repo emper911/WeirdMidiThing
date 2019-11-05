@@ -26,7 +26,8 @@ function startTensorflow(){
     */
     // show canvas img to be drawn over
     ctx.drawImage(bernsky, 0, 0, 257, 200);  // -- For whatever reason ctx.drawImage was not working for me.
-    // load the posenet model into "net"
+    
+    // instantiate the posenet model 
     posenet_1 = initPosenet(
                     architect ='MobileNetV1', 
                     output_stride = 16,
@@ -36,11 +37,12 @@ function startTensorflow(){
                     },
                     multiply=0.75,
                 );
+    // load an image into the posenet and process data
     output_pose = loadPosenet(
                     posenet_1,
                     img=bernsky
                 );
-
+    // draw the output on a canvas
     drawOnCanvas(net_output = output_pose);
 
 }
@@ -53,7 +55,7 @@ function initPosenet(architect, output_stride, input_resolution, multiply) {
         inputResolution: input_resolution,
         multiplier: multiply
     });
-    return init_posenet
+    return init_posenet;
 }
 
 function loadPosenet(posenet, img){
@@ -64,7 +66,7 @@ function loadPosenet(posenet, img){
         });
         return pose;
     });
-    return output_pose
+    return output_pose;
 }
 
 function drawOnCanvas(net_output) {
