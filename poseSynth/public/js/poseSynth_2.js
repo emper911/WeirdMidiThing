@@ -1,10 +1,13 @@
 window.addEventListener('load', function(){
-    /* Initates the whole project from one starting point
+    /* Initates the whole project from one starting point.
     *
     */
     initVariables(); //Loads global variables used throughout the page
     initWebCamera();
-    // startTensorflow(); //This is where the magic happens after things are initiated
+    webcamera.addEventListener('loadeddata', function () {
+        startTensorflow();
+
+    }, false);
 });
 
 
@@ -30,18 +33,13 @@ function initVariables(){
         },
         multiply = 0.75,
     );
-
-    webcamera.addEventListener('loadeddata', function(){
-        startTensorflow();
-        
-    }, false);
     
 }
 
 
 function startTensorflow(){
     /* Start tensorflow function and doing cool stuff
-    *
+    *  This is the main loop where everything happens
     */
    
    // show canvas img to be drawn over
@@ -57,12 +55,11 @@ function startTensorflow(){
         
     // draw the output on a canvas
     ctx.save();
-    drawOnCanvas(
-           net_output = output_pose
-    );
+    drawOnCanvas(output_pose);
+    mapMidi(output_pose);
            
     ctx.restore();
-    animation_id = window.requestAnimationFrame(startTensorflow);
+    animation_id = window.requestAnimationFrame(startTensorflow); //creates an infinite loop
 }
 
 
