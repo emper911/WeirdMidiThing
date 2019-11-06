@@ -60,8 +60,8 @@ function onWebcamSelected() {
     let constraints = {
         video: { 
             deviceId: { exact: id },
-            width: 257,
-            height: 200,
+            width: 600,
+            height: 400,
         },
     };
 

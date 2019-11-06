@@ -28,8 +28,8 @@ function initVariables(){
         architect = 'MobileNetV1',
         output_stride = 16,
         input_resolution = {
-            width: 257,
-            height: 200
+            width: 600,
+            height: 400
         },
         multiply = 0.75,
     );
@@ -43,9 +43,9 @@ function startTensorflow(){
     */
    
    // show canvas img to be drawn over
-    ctx.clearRect(0, 0, 257, 200);
+    ctx.clearRect(0, 0, 600, 400);
     ctx.save();
-    ctx.drawImage(webcamera, 0, 0, 257, 200);  // -- For whatever reason ctx.drawImage was not working for me.
+    ctx.drawImage(webcamera, 0, 0, 600, 400);  // -- For whatever reason ctx.drawImage was not working for me.
     ctx.restore();
     // load an image into the posenet and process data
     output_pose = loadPosenet(
@@ -59,6 +59,7 @@ function startTensorflow(){
     mapMidi(output_pose);
            
     ctx.restore();
+    // setInterval(10);
     animation_id = window.requestAnimationFrame(startTensorflow); //creates an infinite loop
 }
 
@@ -105,9 +106,9 @@ function drawOnCanvas(net_output) {
                 ctx.arc(pose.keypoints[i].position.x, pose.keypoints[i].position.y, 4, 0, 2 * Math.PI);
                 ctx.fill();
                 // ctx.save();
-                console.log(pose.keypoints[i].part);
+                console.log(pose.keypoints[i].position);
             }
         }
-        console.log(pose);
+        // console.log(pose);
     });
 }
