@@ -1,9 +1,17 @@
-/* #webcam, #capture {
-    display: inline-block;
-    border: solid 1px black;
-    width: 257px;
-    height: 200px;
-} */
 #webcam-dropdown { 
     display: block; 
+}
+
+#bern {
+    width: 257px;
+    height: 200px;
+}
+
+#myCanvas {
+    width: 300px;
+    height: 200px;
+}
+
+video{
+    display: none;
 }

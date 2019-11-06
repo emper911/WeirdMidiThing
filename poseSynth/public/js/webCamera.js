@@ -1,12 +1,3 @@
-function initWebCamera(){
-    triggerAuthorizationPrompt()
-        .then(getWebcamList)
-        .then(loadDropDownMenu)
-        .then(onWebcamSelected);
-    
-}
-
-
 function triggerAuthorizationPrompt() {
 
     if (!navigator.mediaDevices) {
@@ -60,8 +51,8 @@ function onWebcamSelected() {
     let constraints = {
         video: { 
             deviceId: { exact: id },
-            width: 600,
-            height: 400,
+            width: 300,
+            height: 200,
         },
     };
 
@@ -73,8 +64,20 @@ function onWebcamSelected() {
         });
 }
 
+function reconnectVideoStream() {
+    /* Reconnects videostream
+    *
+    */
+    initWebCamera();
+
+
+}
 
 function disconnectVideoStream() {
+    /* Disconnects videostream
+    *
+    */
+
 
     // Fetch video element. If it does not have a stream, we are done.
     let videoElement = document.getElementById("webcam");
@@ -84,7 +87,8 @@ function disconnectVideoStream() {
     videoElement.srcObject.getTracks().forEach(track => track.stop());
     videoElement.srcObject = undefined;
     videoElement.src = "";
-    // startTensorflow();
     window.cancelAnimationFrame(animation_id);
+    // window.cancelAnimationFrame(animation_id_1);
+    // window.cancelAnimationFrame(animation_id_2);
 
 }
