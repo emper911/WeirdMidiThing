@@ -1,54 +1,63 @@
 window.addEventListener('load', function(){
-    /* Initates the whole project from one starting point
+    /* Initates the whole project from one starting point.
     *
     */
     initVariables(); //Loads global variables used throughout the page
-    startTensorflow(); //This is where the magic happens after things are initiated
-});
+    initWebCamera();
+    webcamera.addEventListener('loadeddata', function () {
+        startTensorflow();
 
+    }, false);
+});
 
 function initVariables(){
     /* Initating global variables for now
     *
     */
-
     // get input img html element
     bernsky = document.getElementById('bern');
+    webcamera = document.getElementById("webcam");
     //create canvas context 
     canvas = document.getElementById("myCanvas");
     ctx = canvas.getContext("2d");
     posenet = window.posenet;
     ctx.fillStyle = "#00FFFF"; 
+
+    posenet_1 = initPosenet(
+        architect = 'MobileNetV1',
+        output_stride = 16,
+        input_resolution = {
+            width: 600,
+            height: 400
+        },
+        multiply = 0.75,
+    );
+    
 }
 
 
 function startTensorflow(){
     /* Start tensorflow function and doing cool stuff
+    *  This is the main loop where everything happens
     */
-
+   
     // show canvas img to be drawn over
-    ctx.drawImage(bernsky, 0, 0, 257, 200);  // -- For whatever reason ctx.drawImage was not working for me.
-
-    // instantiate the posenet model 
-    posenet_1 = initPosenet(
-        architect = 'MobileNetV1',
-        output_stride = 16,
-        input_resolution = {
-            width: 257,
-            height: 200
-        },
-        multiply = 0.75,
-    );
+    ctx.clearRect(0, 0, 600, 400);
+    ctx.save();
+    ctx.drawImage(webcamera, 0, 0, 600, 400);  // -- For whatever reason ctx.drawImage was not working for me.
+    ctx.restore();
     // load an image into the posenet and process data
-    output_pose = loadPosenet(
-        posenet_1,
-        img = bernsky
-    );
-
+    ctx.save();
+    output_pose = loadPosenet( posenet_1, img = canvas);
+    ctx.restore();
     // draw the output on a canvas
-    drawOnCanvas(
-        net_output = output_pose
-    );
+    ctx.save();
+    drawOnCanvas(output_pose);
+    ctx.restore();
+    // mapMidi(output_pose);
+        
+    // setInterval(10);
+    animation_id = window.requestAnimationFrame(startTensorflow); //creates an infinite loop
 }
 
 
@@ -87,14 +96,17 @@ function drawOnCanvas(net_output) {
     */
     net_output.then(function (pose) {
         // for each keypoint, draw a dot on the canvas if confidence score is above threshold
+        ctx.beginPath();
         for (i = 0; i < 17; i++) {
             if (pose.keypoints[i].score > 0.40) {
-                ctx.beginPath();
+                // ctx.restore();
+                ctx.moveTo(pose.keypoints[i].position.x, pose.keypoints[i].position.y,);
                 ctx.arc(pose.keypoints[i].position.x, pose.keypoints[i].position.y, 4, 0, 2 * Math.PI);
-                ctx.fill();
-                console.log(pose.keypoints[i].part);
+                // ctx.save();
+                // console.log(pose);
             }
         }
-        console.log(pose);
+        ctx.fill();
+        // console.log(pose);
     });
 }

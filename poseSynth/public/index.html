@@ -1,22 +1,24 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>())))))))</title>
+    <title>Posenet Midi Controller Thing</title>
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/posenet"></script>
     <!-- <script src="js/poseSynth.js"></script> -->
     <script src="js/webCamera.js"></script>
     <script src="js/midiMapping.js"></script>
-    <script src="js/poseSynth_2.js"></script>
+    <script src="js/poseSynth_2.js"></script> <!--Starting point of webapp-->
 
 </head>
 
 <body>
+    <p><select name="webcam-dropdown" id="webcam-dropdown"></select></p>
     <img id='bern' src='./images/bernieboi.jpg' width="257" height="200" />
-    <video id="webcam"></video>
-    <canvas id="myCanvas" width="257" height="200"></canvas>
-
+    <video id="webcam" autoplay="true"></video>
+    <canvas id="myCanvas" width="600" height="400"></canvas>
+    <button id="start" onclick="initWebCamera()">Start Video</button>
+    <button id="stop" onclick="disconnectVideoStream()">Stop Video</button>
 
 
 </body>
