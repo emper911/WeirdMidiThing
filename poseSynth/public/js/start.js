@@ -5,65 +5,17 @@ window.addEventListener('load', function () {
     /* Initates the whole project from one starting point.
     *
     */
-    initVariables(); //Loads global variables used throughout the page
-    initWebCamera(); //loads webcamera
-    initTensorFlow(); //loads posenet with parameters
+    initApp(); // Initializes dependencies
     startApp(); //starts application
 });
 
 
-function initVariables() {
-    /* Initalizes global variables for now
-    *
-    */
-    bernsky = document.getElementById('bern');
-    webcamera = document.getElementById("webcam");
-    //create canvas context 
-    canvas = document.getElementById("myCanvas");
-    ctx = canvas.getContext("2d");
-    posenet = window.posenet;
-    ctx.fillStyle = "#00FFFF";
-
-}
-
-
-function initWebCamera() {
-    /* Initializes webcam, prompting user for access, 
-    *  providing drop down menu for selecting camera and sending video stream to video tag.
-    *  Functions are from webCamera.js
-    */
-    triggerAuthorizationPrompt()
-        .then(getWebcamList)
-        .then(loadDropDownMenu)
-        .then(onWebcamSelected)
-        .catch((err) => { console.error(err.message) });
-
-}
-
-
-function initTensorFlow() {
-    /* Initializes posenet with set parameters
-    * 
-    */
-    posenet_1 = initPosenet(
-        architect = 'MobileNetV1',
-        output_stride = 16,
-        input_resolution = {
-            width: 300,
-            height: 200
-        },
-        multiply = 0.75,
-    );
-}
-
-
 function startApp(){
-    
     function animate(){
-        startWebCamOntoCanvas();
-        startPosenet();
-        animation_id = window.requestAnimationFrame(animate);
+        posenetWebcamFrame();
+        animation_id = window.requestAnimationFrame(animate);   
     }
+
     //Once webcamera stream is fully loaded into <video> tag
     webcamera.addEventListener('loadeddata', function () {
         animate(); //start animation frame
@@ -71,23 +23,46 @@ function startApp(){
 }
 
 
-function startWebCamOntoCanvas() {
-    /* Attaches video tag to canvas
-    * 
-    */
-    ctx.clearRect(0, 0, 300, 200);
-    ctx.save();
-    ctx.drawImage(webcamera, 0, 0, 300, 200);  // -- Draws webcam on canvas
-    ctx.restore();
+async function posenetWebcamFrame(output_pose) {
+    /* Start posenet functions from PoseSynth_2.js and doing cool stuff
+    *  
+    */ 
+    webcamOntoCanvas();
+    output_pose = await loadPosenet(canvas); // load an image into the posenet and process data
+    drawPoseOnCanvas(output_pose);
+    // mapMidi(output_pose);
 
 }
 
 
-async function startPosenet() {
-    /* Start posenet functions from PoseSynth_2.js and doing cool stuff
+function webcamOntoCanvas() {
+    /* Attaches video tag to canvas
+    * 
+    */
+    ctx.clearRect(0, 0, 257, 200);
+    ctx.drawImage(webcamera, 0, 0, 257, 200);  // -- Draws webcam on canvas
+
+}
+
+
+function drawPoseOnCanvas(pose) {
+    /* Draws the output on the canvas
     *  
     */
-    output_pose = await loadPosenet(posenet_1, img = canvas); // load an image into the posenet and process data
-    drawOnCanvas(output_pose);
-    // mapMidi(output_pose);
+    ctx2.clearRect(0, 0, 500, 400);
+    ctx2.save();
+    ctx2.beginPath();
+    for (i = 0; i < 17; i++) {
+        if (pose.keypoints[i].score > 0.40) {
+            const x = pose.keypoints[i].position.x;
+            const y = pose.keypoints[i].position.y;
+            ctx2.moveTo(x, y);
+            ctx2.arc(x, y, 4, 0, 2 * Math.PI);
+        }
+    }
+    ctx2.closePath();
+    ctx2.fill();
+    ctx2.restore();
+
+    // console.log(pose);
 }
