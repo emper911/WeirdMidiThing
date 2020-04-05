@@ -1,0 +1,20 @@
+{
+  "name": "posesynth",
+  "version": "1.0.0",
+  "description": "Webapp for posesynth midi music something from the matrix not really though, I dunno maybe itll work?",
+  "main": "server.js",
+  "scripts": {
+    "test": "node server .js",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/emper911/WeirdMidiThing/tree/master/poseSynth"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "path": "^0.12.7"
+  }
+}
