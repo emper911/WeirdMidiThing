@@ -14,11 +14,9 @@ app.listen(3000, function () {
 });
 
 //root html file
-
 app.get('/', function (req, res) {
     res.sendFile('root');
 });
-
 
 
 
