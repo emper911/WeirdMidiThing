@@ -11,11 +11,9 @@ window.addEventListener('load', function () {
 
 
 function startApp(){
-    function animate(){
-        posenetWebcamFrame();
-        animation_id = window.requestAnimationFrame(animate);   
-    }
-
+    /*
+    *
+    */
     //Once webcamera stream is fully loaded into <video> tag
     webcamera.addEventListener('loadeddata', function () {
         animate(); //start animation frame
@@ -23,14 +21,23 @@ function startApp(){
 }
 
 
-async function posenetWebcamFrame(output_pose) {
+function animate(){
+    /*
+    *
+    */
+    posenetWebcamFrame();
+    animation_id = window.requestAnimationFrame(animate);   
+}
+
+
+async function posenetWebcamFrame() {
     /* Start posenet functions from PoseSynth_2.js and doing cool stuff
     *  
     */ 
     webcamOntoCanvas();
     output_pose = await loadPosenet(canvas); // load an image into the posenet and process data
     drawPoseOnCanvas(output_pose);
-    // mapMidi(output_pose);
+    sendOutputPose(output_pose);
 
 }
 
@@ -64,6 +71,8 @@ function drawPoseOnCanvas(pose) {
     ctx2.closePath();
     ctx2.fill();
     ctx2.restore();
+}
 
-    // console.log(pose);
+function sendOutputPose(output_pose){
+    console.log(output_pose);
 }
