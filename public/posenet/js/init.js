@@ -48,7 +48,7 @@ async function initTensorFlow() {
         architect = 'MobileNetV1',
         output_stride = 16,
         input_resolution = {
-            width: 257,
+            width: 200,
             height: 200
         },
 

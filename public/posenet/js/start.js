@@ -34,10 +34,10 @@ async function posenetWebcamFrame() {
     /* Start posenet functions from PoseSynth_2.js and doing cool stuff
     *  
     */ 
-    webcamOntoCanvas();
-    output_pose = await loadPosenet(canvas); // load an image into the posenet and process data
-    drawPoseOnCanvas(output_pose);
-    sendOutputPose(output_pose);
+   webcamOntoCanvas();
+   output_pose = await loadPosenet(canvas); // load an image into the posenet and process data
+   drawPoseOnCanvas(output_pose);
+      sendOutputPose(output_pose);
 
 }
 
@@ -73,6 +73,20 @@ function drawPoseOnCanvas(pose) {
     ctx2.restore();
 }
 
-function sendOutputPose(output_pose){
-    console.log(output_pose);
+async function sendOutputPose(output_pose){
+    // fetch()
+    // console.log(output_pose);
+    const url = new URL('http://localhost:3000/convertPosenet');
+    const params = { pose: JSON.stringify(output_pose)} // or:
+    url.search = new URLSearchParams(params).toString();
+    const response = await fetch(url);
+
+    // const options = {
+    //     method: 'POST',
+    //     headers: {
+    //         'Accept': 'application/json',
+    //         'Content-Type': 'application/json'
+    //     },
+    //     body: JSON.stringify({'output_pose': output_pose})
+    // };
 }
