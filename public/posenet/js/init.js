@@ -55,3 +55,16 @@ async function initTensorFlow() {
         multiply = 0.50,
     );
 }
+
+async function initPosenet(architect, output_stride, input_resolution, multiply) { /* Instantiates the posenet network
+    *  Returns the network object
+    */
+    const init_posenet = await posenet.load({
+        architecture: architect,
+        outputStride: output_stride,
+        inputResolution: input_resolution,
+        multiplier: multiply,
+        // quantBytes: 1
+    });
+    return init_posenet;
+}

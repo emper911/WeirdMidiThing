@@ -34,10 +34,10 @@ async function posenetWebcamFrame() {
     /* Start posenet functions from PoseSynth_2.js and doing cool stuff
     *  
     */ 
-   webcamOntoCanvas();
-   output_pose = await loadPosenet(canvas); // load an image into the posenet and process data
-   drawPoseOnCanvas(output_pose);
-      sendOutputPose(output_pose);
+    webcamOntoCanvas();
+    output_pose = await loadPosenet(canvas); // load an image into the posenet and process data
+    drawPoseOnCanvas(output_pose);
+    sendOutputPose(output_pose);
 
 }
 
@@ -46,10 +46,23 @@ function webcamOntoCanvas() {
     /* Attaches video tag to canvas
     * 
     */
-    ctx.clearRect(0, 0, 257, 200);
-    ctx.drawImage(webcamera, 0, 0, 257, 200);  // -- Draws webcam on canvas
+    ctx.clearRect(0, 0, 200, 200);
+    ctx.drawImage(webcamera, 0, 0, 200, 200);  // -- Draws webcam on canvas
 
 }
+
+async function loadPosenet(vid) {
+    /* loads an image into the network
+    *  Returns the output promise
+    */
+    // run vid through network and record results in "pose"
+    const pose = await net.estimateSinglePose(vid, {
+        flipHorizontal: false,
+        decodingMethod: 'single-person'
+    });
+    return pose;
+}
+
 
 
 function drawPoseOnCanvas(pose) {
@@ -57,7 +70,7 @@ function drawPoseOnCanvas(pose) {
     *  
     */
     ctx2.clearRect(0, 0, 500, 400);
-    ctx2.drawImage(webcamera, 0, 0, 257, 200);
+    ctx2.drawImage(webcamera, 0, 0, 200, 200);
     ctx2.save();
     ctx2.beginPath();
     for (i = 0; i < 17; i++) {
