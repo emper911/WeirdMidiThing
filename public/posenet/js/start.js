@@ -2,21 +2,19 @@
 ***********************************STARTING POINT OF APP***********************************
 *******************************************************************************************/
 window.addEventListener('load', function () {
-    /* Initates the whole project from one starting point.
-    *
-    */
-    initApp(); // Initializes dependencies init.js
-    startApp(); //starts application
+    init(); // Initializes global variables and functions in init.js
+    start(); //starts application
 });
 
 
-function startApp(){
+function start(){
     /*
-    *
+    Entry point to application.
+    Once webcamera stream is fully loaded into <video> tag
+    then animate function is called
     */
-    //Once webcamera stream is fully loaded into <video> tag
     webcamera.addEventListener('loadeddata', function () {
-        animate(); //start animation frame
+        animate();
     }, false);
 }
 
@@ -31,31 +29,30 @@ function animate(){
 
 
 async function posenetWebcamFrame() {
-    /* Start posenet functions from PoseSynth_2.js and doing cool stuff
-    *  
+    /* 
+    Start posenet functions from PoseSynth_2.js and doing cool stuff
     */ 
     webcamOntoCanvas();
     output_pose = await loadPosenet(canvas); // load an image into the posenet and process data
     drawPoseOnCanvas(output_pose);
     sendOutputPose(output_pose);
-
 }
 
 
 function webcamOntoCanvas() {
-    /* Attaches video tag to canvas
-    * 
+    /* 
+    Attaches video tag to canvas
     */
     ctx.clearRect(0, 0, 200, 200);
     ctx.drawImage(webcamera, 0, 0, 200, 200);  // -- Draws webcam on canvas
-
 }
+
 
 async function loadPosenet(vid) {
     /* loads an image into the network
-    *  Returns the output promise
+    run vid through network and record results in "pose"
+    Returns the output promise
     */
-    // run vid through network and record results in "pose"
     const pose = await net.estimateSinglePose(vid, {
         flipHorizontal: false,
         decodingMethod: 'single-person'
@@ -64,10 +61,9 @@ async function loadPosenet(vid) {
 }
 
 
-
 function drawPoseOnCanvas(pose) {
-    /* Draws the output on the canvas
-    *  
+    /*  
+    Draws the output on the canvas
     */
     ctx2.clearRect(0, 0, 500, 400);
     ctx2.drawImage(webcamera, 0, 0, 200, 200);
@@ -87,19 +83,11 @@ function drawPoseOnCanvas(pose) {
 }
 
 async function sendOutputPose(output_pose){
-    // fetch()
-    // console.log(output_pose);
+    /*
+    Sends the output midi cc to server
+    */
     const url = new URL('http://localhost:3000/convertPosenet');
     const params = { pose: JSON.stringify(output_pose)} // or:
     url.search = new URLSearchParams(params).toString();
-    const response = await fetch(url);
-
-    // const options = {
-    //     method: 'POST',
-    //     headers: {
-    //         'Accept': 'application/json',
-    //         'Content-Type': 'application/json'
-    //     },
-    //     body: JSON.stringify({'output_pose': output_pose})
-    // };
+    await fetch(url);
 }

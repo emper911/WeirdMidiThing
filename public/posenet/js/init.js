@@ -1,4 +1,4 @@
-function initApp() {
+function init() {
     /* Initializes global variables, webcam and tensorflow -- posenet
     *
     */
@@ -42,29 +42,16 @@ function initWebCamera() {
 
 async function initTensorFlow() {
     /* Initializes posenet with set parameters
-    * 
+    *  Creates a global variable called net
     */
-    net = await initPosenet(
-        architect = 'MobileNetV1',
-        output_stride = 16,
-        input_resolution = {
+    net = await posenet.load({
+        architecture : 'MobileNetV1',
+        outputStride: 16,
+        inputResolution : {
             width: 200,
             height: 200
         },
-
-        multiply = 0.50,
-    );
-}
-
-async function initPosenet(architect, output_stride, input_resolution, multiply) { /* Instantiates the posenet network
-    *  Returns the network object
-    */
-    const init_posenet = await posenet.load({
-        architecture: architect,
-        outputStride: output_stride,
-        inputResolution: input_resolution,
-        multiplier: multiply,
+        multiplier: 0.5,
         // quantBytes: 1
     });
-    return init_posenet;
 }
