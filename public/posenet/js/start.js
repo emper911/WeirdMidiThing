@@ -40,7 +40,7 @@ async function posenetWebcamFrame(current_time) {
         output_pose = await loadPosenet(state.webcamera);
         posenetToMidi(output_pose);
     }
-    drawWebcamOntoCanvas();
+    if (state.webcamera_on) drawWebcamOntoCanvas();
     drawPoseOntoCanvas(output_pose);
     // callback to this function creating animation loop
     window.requestAnimationFrame(posenetWebcamFrame);
