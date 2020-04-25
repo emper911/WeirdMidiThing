@@ -10,24 +10,26 @@ function init() {
 function initVariables() {
     /* Initalizes html element tags and js objects from CDNs as global variables
     */
-    //webcamera global
-    webcamera = document.getElementById('webcam');
-    webcamera.width = 257;
-    webcamera.height = 200;
-    //create canvas context
-    camCanvas = document.getElementById("camCanvas");
-    cctx = camCanvas.getContext("2d");
-    cctx.fillStyle = "#00FFF";
     //posenet globals
     posenet = window.posenet;
-    net = null;
+    //manages global state as object
+    state = {};
+    //webcamera globals
+    state.webcamera = document.getElementById('webcam');
+    state.webcamera.width = 257;
+    state.webcamera.height = 200;
+    state.webcamera_on = true;
+    //create canvas context
+    state.camCanvas = document.getElementById("camCanvas");
+    state.cctx = camCanvas.getContext("2d");
+    state.cctx.fillStyle = "#00FFF";
+    state.net = null;
     //animation frame globals
-    animation_id = null;
+    state.animation_id = null;
+    state.start_time = 0;
+    state.process_rate = 40; //200ms
     //model training global
-    state = 'starting';
-    start_time = 0;
-    paused = false;
-
+    state.midiModel = new MidiPoseModel();
 }
 
 
@@ -47,7 +49,7 @@ function initWebCamera() {
 async function initTensorFlow() {
     /* Initializes posenet with set parameters. Loads global variable called 'net'
     */
-    net = await posenet.load({
+    state.net = await posenet.load({
         architecture : 'MobileNetV1',
         outputStride: 16,
         inputResolution : {
@@ -58,3 +60,4 @@ async function initTensorFlow() {
         // quantBytes: 1
     });
 }
+

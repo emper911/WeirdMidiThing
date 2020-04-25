@@ -13,18 +13,18 @@ function startApp(){
     Once webcamera stream is fully loaded into <video> tag
     then animate function is called
     */
-    webcamera.addEventListener('loadeddata', function (){
-        animated();
+    state.webcamera.addEventListener('loadeddata', function (){
+        animate();
     });
 }
 
 
-function animated() {
+function animate() {
     /*
     Within the animation loop, posenet estimates set of values,
     draws them on a new canvas and sends data to server.
     */
-    animation_id = window.requestAnimationFrame(posenetWebcamFrame);
+    state.animation_id = window.requestAnimationFrame(posenetWebcamFrame);
 }
 
 
@@ -33,13 +33,12 @@ async function posenetWebcamFrame(current_time) {
     Draws webcam onto the canvas, gets pose values from canvas,
     Draws the output and sends the pose to the server.
     */ 
-   if (current_time - start_time > 200 && !paused){
-       start_time = current_time;
-       output_pose = await loadPosenet(webcamera); // load an image into the posenet and process data
-       console.log(output_pose);
-       // if (state == 'collecting') capturePose(output_pose);
-       sendOutputPose(output_pose);
-       // if (state == 'modelled') sendOutputPose(output_pose);
+    time_lapsed = current_time - state.start_time;
+    if (state.webcamera_on && time_lapsed > state.process_rate) {
+        state.start_time = current_time;
+         // loads video tag into the posenet and predicts
+        output_pose = await loadPosenet(state.webcamera);
+        posenetToMidi(output_pose);
     }
     drawWebcamOntoCanvas();
     drawPoseOntoCanvas(output_pose);
@@ -48,20 +47,12 @@ async function posenetWebcamFrame(current_time) {
 }
 
 
-function drawWebcamOntoCanvas(){
-    // draws webcamera
-    cctx.clearRect(0, 0, 257, 200);
-    cctx.drawImage(webcamera, 0, 0, 257, 200);
-    cctx.save();
-}
-
-
 async function loadPosenet(vid) {
     /*
     run vid through network and record results in "pose"
     Returns the output
     */
-    const pose = await net.estimateSinglePose(vid, {
+    const pose = await state.net.estimateSinglePose(vid, {
         flipHorizontal: false,
         decodingMethod: 'single-person'
     });
@@ -69,28 +60,52 @@ async function loadPosenet(vid) {
 }
 
 
-function drawPoseOntoCanvas(pose) {
-    /*  
-    Draws the key points from Posenet.
-    */
-    cctx.beginPath();
-    for (i = 0; i < 17; i++) {
-        if (pose.keypoints[i].score > 0.40) {
-            const x = pose.keypoints[i].position.x;
-            const y = pose.keypoints[i].position.y;
-            cctx.moveTo(x, y);
-            cctx.arc(x, y, 4, 0, 2 * Math.PI);
-        }
+function posenetToMidi(output_pose){
+    // managing midi model
+    switch (state.midiModel.status) {
+        case 'trained':
+            midi_pose = state.midiModel.captureMidi(output_pose);
+            sendMidiPoseToServer(midi_pose);
+            break;
+        case 'collecting':
+            state.midiModel.addData(output_pose);
+            break;
+        case 'begin':
+            state.midiModel.creatingMidiModel(output_pose);
+            break;
     }
-    cctx.closePath();
-    cctx.fill();
-    cctx.restore();
 }
 
 
-async function sendOutputPose(output_pose){
-    /*
-    Sends the output midi cc to server
+function drawWebcamOntoCanvas(){
+    /* Draws webcamera onto canvas.
+    */
+    state.cctx.clearRect(0, 0, 257, 200);
+    state.cctx.drawImage(state.webcamera, 0, 0, 257, 200);
+    state.cctx.save();
+}
+
+
+function drawPoseOntoCanvas(pose) {
+    /*  Draws the key points from Posenet onto canvas.
+    */
+    state.cctx.beginPath();
+    for (i = 0; i < 17; i++) {
+        if (pose.keypoints[i].score > 0.45) {
+            const x = pose.keypoints[i].position.x;
+            const y = pose.keypoints[i].position.y;
+            state.cctx.moveTo(x, y);
+            state.cctx.arc(x, y, 4, 0, 2 * Math.PI);
+        }
+    }
+    state.cctx.closePath();
+    state.cctx.fill();
+    state.cctx.restore();
+}
+
+
+async function sendMidiPoseToServer(output_pose){
+    /* Sends the output midi to server
     */
     const url = new URL('http://localhost:3000/convertPosenet');
     const params = { pose: JSON.stringify(output_pose)} // or:

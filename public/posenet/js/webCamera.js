@@ -47,7 +47,7 @@ function onWebcamSelected() {
     };
     // Attach the webcam feed to a video element so we can view it
     return navigator.mediaDevices.getUserMedia(constraints)
-        .then(stream => webcamera.srcObject = stream)
+        .then(stream => state.webcamera.srcObject = stream)
         .catch(function (err0r) {
             console.log("Something went wrong!");
         }
@@ -59,7 +59,7 @@ function reconnectVideoStream() {
     /* Reconnects videostream
     */
     initWebCamera();
-    paused = false;
+    state.webcamera_on = true;
 }
 
 
@@ -67,11 +67,11 @@ function disconnectVideoStream() {
     /* Disconnects videostream
     */
     // Fetch video element. If it does not have a stream return nothing.
-    if (!webcamera.srcObject) return;
+    if (!state.webcamera.srcObject) return;
     // Pause the video, stop all tracks and make sure no reference remain.
-    webcamera.srcObject.getTracks().forEach(track => track.stop());
-    webcamera.srcObject = undefined;
-    webcamera.src = "";
-    window.cancelAnimationFrame(animation_id);
-    paused = true;
+    state.webcamera.srcObject.getTracks().forEach(track => track.stop());
+    state.webcamera.srcObject = undefined;
+    state.webcamera.src = "";
+    window.cancelAnimationFrame(state.animation_id);
+    state.webcamera_on = false;
 }
