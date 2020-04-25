@@ -16,6 +16,7 @@
 </head>
 
 <body>
+    <a href="../index.html">Home</a>
     <p><select name="webcam-dropdown" id="webcam-dropdown"></select></p>
     <!-- <img id='bern' src='./images/bernieboi.jpg'/> -->
     <video id="webcam" autoplay></video>
@@ -24,8 +25,17 @@
             <canvas id="camCanvas"></canvas>
         </div>
     </div>
-    <button id="start" onclick="reconnectVideoStream()">Start Video</button>
-    <button id="stop" onclick="disconnectVideoStream()">Stop Video</button>
+    <div class="video-controls">
+        <button id="start" onclick="reconnectVideoStream()">Start Video</button>
+        <button id="stop" onclick="disconnectVideoStream()">Stop Video</button>
+    </div>
+    <div class="pose-capture">
+        <div class="pose-capture-controls">
+            <button id="pose-start" onclick="state.midiModel._startCapturing()">start</button>
+            <button id="pose-capture" onclick="state.midiModel._capturePose()">capture</button>
+            <button id="pose-finish" onclick="state.midiModel._stopCapturing()">stop</button>
+        </div>
 
+    </div>
 </body>
 </html>

@@ -3,20 +3,39 @@ class MidiPoseModel{
     constructor(model_options){
         this.status = null;
         this.options = model_options;
+        this.capture_delay = 10000;
+        this.capture_time = 0;
+    }
+
+    _startCapturing(){
+        //state updater
+        this.status = 'begin';
     }
     
-    createTestDataset(output_pose){
-        //once dataset intialized
+    _capturePose(){
+        //state updater
         this.status = 'collecting';
+    }
+
+    _stopCapturing(){
+        //state updater
+        this.status = 'collected';
+    }
+
+    createTestDataset(){
+        //once dataset intialized
+        this.status = 'waiting';
     }
 
     addData(output_pose){
         console.log("woohoo");
         //on done adding to test set
-        this.status = 'collected';
+        this.status = 'waiting';
     }
 
     learning(){
+        //most likely async
+
         //once trained from test data
         this.status = 'trained';
     }
@@ -28,3 +47,4 @@ class MidiPoseModel{
     }
 
 }
+

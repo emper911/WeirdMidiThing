@@ -38,7 +38,7 @@ async function posenetWebcamFrame(current_time) {
         state.start_time = current_time;
          // loads video tag into the posenet and predicts
         output_pose = await loadPosenet(state.webcamera);
-        posenetToMidi(output_pose);
+        posenetToMidi(output_pose, current_time);
     }
     if (state.webcamera_on) drawWebcamOntoCanvas();
     drawPoseOntoCanvas(output_pose);
@@ -60,7 +60,7 @@ async function loadPosenet(vid) {
 }
 
 
-function posenetToMidi(output_pose){
+function posenetToMidi(output_pose, current_time){
     // managing midi model
     switch (state.midiModel.status) {
         case 'trained':
@@ -68,13 +68,16 @@ function posenetToMidi(output_pose){
             sendMidiPoseToServer(midi_pose);
             break;
         case 'collecting':
-            state.midiModel.addData(output_pose);
+            const lapsed = current_time - state.midiModel.capture_time;
+            if (lapsed > state.midiModel.capture_delay)
+                state.midiModel.capture_time = current_time;
+                state.midiModel.addData(output_pose);
             break;
         case 'collected':
             state.midiModel.learning();
             break;
         case 'begin':
-            state.midiModel.creatTestDataset(output_pose);
+            state.midiModel.creatTestDataset();
             break;
     }
 }
