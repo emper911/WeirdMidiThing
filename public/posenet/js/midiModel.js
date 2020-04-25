@@ -1,20 +1,30 @@
 
 class MidiPoseModel{
-    constructor(){
+    constructor(model_options){
         this.status = null;
+        this.options = model_options;
     }
-
-    creatingModel(output_pose){
+    
+    createTestDataset(output_pose){
+        //once dataset intialized
         this.status = 'collecting';
-        console.log("woohoo");
-    }
-
-    captureMidi(output_pose){
-        midi_mapped = output_pose;
-        return midi_mapped;
     }
 
     addData(output_pose){
         console.log("woohoo");
+        //on done adding to test set
+        this.status = 'collected';
     }
+
+    learning(){
+        //once trained from test data
+        this.status = 'trained';
+    }
+
+    captureMidi(output_pose){
+        //predicts from output_pose
+        midi_mapped = output_pose;
+        return midi_mapped;
+    }
+
 }

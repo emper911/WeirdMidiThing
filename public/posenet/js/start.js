@@ -70,8 +70,11 @@ function posenetToMidi(output_pose){
         case 'collecting':
             state.midiModel.addData(output_pose);
             break;
+        case 'collected':
+            state.midiModel.learning();
+            break;
         case 'begin':
-            state.midiModel.creatingMidiModel(output_pose);
+            state.midiModel.creatTestDataset(output_pose);
             break;
     }
 }
