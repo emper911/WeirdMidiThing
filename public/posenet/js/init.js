@@ -10,8 +10,9 @@ function init() {
 function initVariables() {
     /* Initalizes html element tags and js objects from CDNs as global variables
     */
-    //posenet globals
+    //tensorflow globals
     posenet = window.posenet;
+    tf = window.tf;
     //manages global state as object
     state = {};
     //webcamera globals
@@ -27,7 +28,7 @@ function initVariables() {
     //animation frame globals
     state.animation_id = null;
     state.start_time = 0;
-    state.process_rate = 40; //200ms
+    state.process_rate = 100; //100ms
     //model training global
     state.midiModel = new MidiPoseModel();
 }
