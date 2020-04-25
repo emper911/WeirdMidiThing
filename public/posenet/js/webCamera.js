@@ -1,24 +1,18 @@
 function triggerAuthorizationPrompt() {
-
     if (!navigator.mediaDevices) {
         throw new Error("The MediaDevices API is not supported.");
     }
-
     return navigator.mediaDevices.getUserMedia({ video: true });
 }
 
 
 function getWebcamList(){
-
     return new Promise((resolve, reject)=> { 
         navigator.mediaDevices.enumerateDevices()
             .then(devices => {
-
                 let filtered = devices.filter((device) => {
-                    // console.log(device);
                     return device.kind === "videoinput"
                 });
-
                 resolve(filtered);
             })
     });
@@ -40,10 +34,6 @@ function loadDropDownMenu(webcams){
 
 
 function onWebcamSelected() {
-
-    // Fetch our video element
-    let videoElement = document.getElementById("webcam");
-
     // Retrieve the webcam's device id and use it in the constraints object
     let dropdown = document.getElementById("webcam-dropdown");
     let id = dropdown.options[dropdown.selectedIndex].value;
@@ -51,44 +41,37 @@ function onWebcamSelected() {
     let constraints = {
         video: { 
             deviceId: { exact: id },
-            width: 257,
-            height: 200,
+            width: width,
+            height: height,
         },
     };
-
     // Attach the webcam feed to a video element so we can view it
     return navigator.mediaDevices.getUserMedia(constraints)
-        .then(stream => videoElement.srcObject = stream)
+        .then(stream => state.webcamera.srcObject = stream)
         .catch(function (err0r) {
             console.log("Something went wrong!");
-        });
+        }
+    );
 }
+
 
 function reconnectVideoStream() {
     /* Reconnects videostream
-    *
     */
     initWebCamera();
-
-
+    state.webcamera_on = true;
 }
+
 
 function disconnectVideoStream() {
     /* Disconnects videostream
-    *
     */
-
-
-    // Fetch video element. If it does not have a stream, we are done.
-    let videoElement = document.getElementById("webcam");
-    if (!videoElement.srcObject) return;
-
+    // Fetch video element. If it does not have a stream return nothing.
+    if (!state.webcamera.srcObject) return;
     // Pause the video, stop all tracks and make sure no reference remain.
-    videoElement.srcObject.getTracks().forEach(track => track.stop());
-    videoElement.srcObject = undefined;
-    videoElement.src = "";
-    window.cancelAnimationFrame(animation_id);
-    // window.cancelAnimationFrame(animation_id_1);
-    // window.cancelAnimationFrame(animation_id_2);
-
+    state.webcamera.srcObject.getTracks().forEach(track => track.stop());
+    state.webcamera.srcObject = undefined;
+    state.webcamera.src = "";
+    window.cancelAnimationFrame(state.animation_id);
+    state.webcamera_on = false;
 }

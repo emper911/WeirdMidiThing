@@ -4,7 +4,6 @@ function Particle() {
     this.acc = createVector(0, 0);
     this.maxspeed = 2;
 
-
     this.update = function() {
         this.vel.add(this.acc);
         this.vel.limit(this.maxspeed);
@@ -16,11 +15,12 @@ function Particle() {
         this.acc.add(force);
     }
 
-    this.show = function(color) {
-        var colorNoise = random(255);
-
-        stroke(colorNoise, colorNoise + 30, colorNoise + 52, 12);
-        strokeWeight(2);
+    this.show = function(colorHex) {
+        // var colorNoise = (noisey * 255) % 256;
+        // stroke(colorHex);
+        
+        stroke(120,120,120,12);
+        strokeWeight(1);
         point(this.pos.x, this.pos.y);
     }
 

@@ -1,3 +1,9 @@
+html, body {
+    margin : 0;
+    height: 100%;
+    width: 100%;
+}
+
 #webcam-dropdown { 
     display: block; 
 }
@@ -9,24 +15,22 @@
 
 #container{
     transform: scale(2);
-    margin-left:600px;
+    margin-left: 400px;
+    position : relative;
+
 }
 
-#myCanvas {
+#camCanvas{
     width: 257px;
     height: 200px;
     transform: scale(-1, 1);
     align-content: center;
-    display: none;
-    /* posti */
 }
-#myCanvas2 {
-    width: 257px;
-    height: 200px;
-    transform: scale(-1, 1);
-    align-content: center;
-    /* display: none; */
-    /* posti */
+
+#div1 {
+    position : absolute;
+    top : 0;
+    left : 0;
 }
 
 video{
