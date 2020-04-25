@@ -1,27 +1,33 @@
 function init() {
     /* Initializes global variables, webcam and tensorflow -- posenet
-    *
     */
     initVariables(); //Loads global variables used throughout the page
-    initWebCamera(); //loads webcamera
     initTensorFlow(); //loads posenet with parameters
+    initWebCamera(); //loads webcamera
 }
 
 
 function initVariables() {
     /* Initalizes html element tags and js objects from CDNs as global variables
-    *
     */
-    bernsky = document.getElementById('bern');
-    webcamera = document.getElementById('webcam')
-    //create canvas context 
-    canvas = document.getElementById("myCanvas");
-    ctx = canvas.getContext("2d");
-    ctx.fillStyle = "#00FFFF";
+    //webcamera global
+    webcamera = document.getElementById('webcam');
+    webcamera.width = 257;
+    webcamera.height = 200;
+    //create canvas context
+    camCanvas = document.getElementById("camCanvas");
+    cctx = camCanvas.getContext("2d");
+    cctx.fillStyle = "#00FFF";
+    //posenet globals
     posenet = window.posenet;
-    canvas2 = document.getElementById("myCanvas2");
-    ctx2 = canvas2.getContext("2d");
-    ctx2.fillStyle = "#00FFFF";
+    net = null;
+    //animation frame globals
+    animation_id = null;
+    //model training global
+    state = 'starting';
+    start_time = 0;
+    paused = false;
+
 }
 
 
@@ -35,20 +41,17 @@ function initWebCamera() {
         .then(loadDropDownMenu)
         .then(onWebcamSelected)
         .catch((err) => { console.error(err.message) });
-    // webcamera.play();
-
 }
 
 
 async function initTensorFlow() {
-    /* Initializes posenet with set parameters
-    *  Creates a global variable called net
+    /* Initializes posenet with set parameters. Loads global variable called 'net'
     */
     net = await posenet.load({
         architecture : 'MobileNetV1',
         outputStride: 16,
         inputResolution : {
-            width: 200,
+            width: 257,
             height: 200
         },
         multiplier: 0.5,

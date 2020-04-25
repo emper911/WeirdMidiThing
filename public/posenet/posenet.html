@@ -5,7 +5,7 @@
     <!--CSS Stylesheet-->
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <!--CDN Dependencies-->
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0/dist/tf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/posenet"></script>
     <!--Local Scripts-->
     <script src="http://localhost:3000/posenet/js/webCamera.js"></script>
@@ -19,13 +19,11 @@
 <body>
     <p><select name="webcam-dropdown" id="webcam-dropdown"></select></p>
     <!-- <img id='bern' src='./images/bernieboi.jpg'/> -->
-    <video id="webcam" autoplay="true"></video>
-    <div id="container" style="position:relative;">
-        <div id="div1" style="position:absolute; top:0; left:0;">
-            <canvas id="myCanvas"></canvas>
-        </div>
-        <div id="div2" style="position:absolute; top:0; left:0;">
-            <canvas id="myCanvas2"></canvas>
+    <video id="webcam" autoplay></video>
+    <div id="container">
+        <div id="div1">
+            <!-- <canvas id="pointCanvas"></canvas> -->
+            <canvas id="camCanvas"></canvas>
         </div>
     </div>
     <button id="start" onclick="reconnectVideoStream()">Start Video</button>
