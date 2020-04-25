@@ -16,9 +16,12 @@ function initVariables() {
     //manages global state as object
     state = {};
     //webcamera globals
+    width = 257;
+    height = 200;
+    scale = 2;
     state.webcamera = document.getElementById('webcam');
-    state.webcamera.width = 257;
-    state.webcamera.height = 200;
+    state.webcamera.width = width;
+    state.webcamera.height = height;
     state.webcamera_on = true;
     //create canvas context
     state.camCanvas = document.getElementById("camCanvas");
@@ -54,8 +57,8 @@ async function initTensorFlow() {
         architecture : 'MobileNetV1',
         outputStride: 16,
         inputResolution : {
-            width: 257,
-            height: 200
+            width: width,
+            height: height
         },
         multiplier: 0.5,
         // quantBytes: 1

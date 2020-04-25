@@ -9,7 +9,7 @@ html, body {
 }
 
 #bern {
-    width: 200px;
+    width: 257px;
     height: 200px;
 }
 
@@ -21,7 +21,7 @@ html, body {
 }
 
 #camCanvas{
-    width: 200px;
+    width: 257px;
     height: 200px;
     transform: scale(-1, 1);
     align-content: center;
@@ -35,6 +35,6 @@ html, body {
 
 video{
     display: none;
-    width: 200px;
+    width: 257px;
     height: 200px;
 }

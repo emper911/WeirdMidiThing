@@ -25,25 +25,8 @@ app.get('/', function (req, res) {
 });
 
 app.get('/convertPosenet', function (req, res) {
-    const pose = req.query.pose;
-    const midi_cc = getMidiFromPose(pose);
-    if (max_api) max_api.post(midi_cc);
-    if (max_api) max_api.outlet(midi_cc);
+    const midiPose = req.query.midiPose;
+    if (max_api) max_api.post(midiPose);
+    if (max_api) max_api.outlet(midiPose);
     res.sendStatus(200);
 });
-
-function getMidiFromPose(pose){
-    if (pose.score > 0.4) {
-        return processMidi(pose.keypoints);
-    }
-    else {
-        return 0;
-    }
-    // return pose
-}
-
-function processMidi(pose_points){
-    
-}
-
-

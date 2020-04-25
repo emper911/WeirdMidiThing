@@ -83,8 +83,8 @@ function posenetToMidi(output_pose){
 function drawWebcamOntoCanvas(){
     /* Draws webcamera onto canvas.
     */
-    state.cctx.clearRect(0, 0, 257, 200);
-    state.cctx.drawImage(state.webcamera, 0, 0, 257, 200);
+    state.cctx.clearRect(0, 0, width, height);
+    state.cctx.drawImage(state.webcamera, 0, 0, width, height);
     state.cctx.save();
 }
 
