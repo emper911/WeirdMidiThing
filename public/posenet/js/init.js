@@ -26,12 +26,12 @@ function initVariables() {
     //create canvas context
     state.camCanvas = document.getElementById("camCanvas");
     state.cctx = camCanvas.getContext("2d");
-    state.cctx.fillStyle = "#00FFF";
+    state.cctx.fillStyle = "#00D1FF";
     state.net = null;
     //animation frame globals
     state.animation_id = null;
     state.start_time = 0;
-    state.process_rate = 100; //100ms
+    state.process_rate = 60; //100ms
     //model training global
     state.midiModel = new MidiPoseModel();
 }

@@ -32,14 +32,22 @@ async function posenetWebcamFrame(current_time) {
     /* 
     Draws webcam onto the canvas, gets pose values from canvas,
     Draws the output and sends the pose to the server.
-    */ 
-    time_lapsed = current_time - state.start_time;
-    if (state.webcamera_on && time_lapsed > state.process_rate) {
+    */
+   time_lapsed = current_time - state.start_time;
+   if (state.midiModel.status == 'collecting'){
+        //If in collecting mode capture every frame
+        // loads video tag into the posenet and predicts
+        output_pose = await loadPosenet(state.webcamera);
+        posenetToMidi(output_pose, current_time); 
+    }
+    //Captures pose from webcam at process rate 
+    else if (state.webcamera_on && time_lapsed > state.process_rate) {
         state.start_time = current_time;
          // loads video tag into the posenet and predicts
         output_pose = await loadPosenet(state.webcamera);
         posenetToMidi(output_pose, current_time);
     }
+    
     if (state.webcamera_on) drawWebcamOntoCanvas();
     drawPoseOntoCanvas(output_pose);
     // callback to this function creating animation loop
@@ -61,24 +69,13 @@ async function loadPosenet(vid) {
 
 
 function posenetToMidi(output_pose, current_time){
-    // managing midi model
-    switch (state.midiModel.status) {
-        case 'trained':
-            midi_pose = state.midiModel.captureMidi(output_pose);
-            sendMidiPoseToServer(midi_pose);
-            break;
-        case 'collecting':
-            const lapsed = current_time - state.midiModel.capture_time;
-            if (lapsed > state.midiModel.capture_delay)
-                state.midiModel.capture_time = current_time;
-                state.midiModel.addData(output_pose);
-            break;
-        case 'collected':
-            state.midiModel.learning();
-            break;
-        case 'begin':
-            state.midiModel.creatTestDataset();
-            break;
+
+    if (state.midiModel.status === 'trained'){
+        midi_pose = state.midiModel.captureMidi(output_pose);
+        sendMidiPoseToServer(midi_pose); 
+    }
+    else{
+        state.midiModel.stateMachine(output_pose, current_time);
     }
 }
 
@@ -114,7 +111,7 @@ async function sendMidiPoseToServer(output_pose){
     /* Sends the output midi to server
     */
     const url = new URL('http://localhost:3000/convertPosenet');
-    const params = { pose: JSON.stringify(output_pose)} // or:
+    const params = { pose: JSON.stringify(output_pose)}; // or:
     url.search = new URLSearchParams(params).toString();
     await fetch(url);
 }
