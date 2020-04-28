@@ -31,6 +31,7 @@ function initVariables() {
     //animation frame globals
     state.animation_id = null;
     state.start_time = 0;
+    state.capture_start_delay = 5000;
     state.process_rate = 60; //100ms
     //model training global
     state.midiModel = new MidiPoseModel();

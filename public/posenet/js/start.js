@@ -14,6 +14,7 @@ function startApp(){
     then animate function is called
     */
     state.webcamera.addEventListener('loadeddata', function (){
+        state.start_time = performance.now();
         animate();
     });
 }
@@ -34,11 +35,18 @@ async function posenetWebcamFrame(current_time) {
     Draws the output and sends the pose to the server.
     */
    time_lapsed = current_time - state.start_time;
+   //If in collecting mode, capture every frame
    if (state.midiModel.status == 'collecting'){
-        //If in collecting mode capture every frame
-        // loads video tag into the posenet and predicts
-        output_pose = await loadPosenet(state.webcamera);
-        posenetToMidi(output_pose, current_time); 
+       // Sets a delay of 5 secs before starting capture
+        if (time_lapsed < state.capture_start_delay) {
+            console.log("waiting");
+        }
+        else {
+            state.midiModel.setCaptureTime(current_time);
+            // loads video tag into the posenet and predicts
+            output_pose = await loadPosenet(state.webcamera);
+            posenetToMidi(output_pose, current_time); 
+        }
     }
     //Captures pose from webcam at process rate 
     else if (state.webcamera_on && time_lapsed > state.process_rate) {
@@ -72,7 +80,7 @@ function posenetToMidi(output_pose, current_time){
 
     if (state.midiModel.status === 'trained'){
         midi_pose = state.midiModel.captureMidi(output_pose);
-        sendMidiPoseToServer(midi_pose); 
+        sendMidiPoseToServer(midi_pose, current_time); 
     }
     else{
         state.midiModel.stateMachine(output_pose, current_time);
@@ -107,11 +115,11 @@ function drawPoseOntoCanvas(pose) {
 }
 
 
-async function sendMidiPoseToServer(output_pose){
+async function sendMidiPoseToServer(output_pose, current_time){
     /* Sends the output midi to server
     */
     const url = new URL('http://localhost:3000/convertPosenet');
-    const params = { pose: JSON.stringify(output_pose)}; // or:
+    const params = { pose: JSON.stringify(output_pose), time: current_time}; // or:
     url.search = new URLSearchParams(params).toString();
     await fetch(url);
 }

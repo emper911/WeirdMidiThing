@@ -21,7 +21,7 @@ class MidiPoseModel{
                 this._createTestDataset();
                 break;
             case 'collecting':
-                this._addData(output_pose, current_time);
+                this._addSingleData(output_pose, current_time);
                 break;
             case 'collected':
                 this._start_learning();
@@ -37,9 +37,12 @@ class MidiPoseModel{
     }
     
     capturePose(){
-        //state updater
-        this.capture_time = performance.now();
+        //status updater
         this.status = 'collecting';
+    }
+
+    setCaptureTime(start_capture_time){
+        this.capture_time = start_capture_time;
     }
 
     stopCapturing(){
@@ -98,12 +101,12 @@ class MidiPoseModel{
         this.test_data = [];
     }
 
-    _addData(output_pose, current_time){
+    _addSingleData(output_pose, current_time){
         const lapsed = current_time - this.capture_time;
-
+        console.log(output_pose);
         if (lapsed < this.capture_delay) {
             let parts_array = []
-            output_pose.pose.keypoints.map( (part) => {
+            output_pose.keypoints.map( (part) => {
                 parts_array.push(part.position.x);
                 parts_array.push(part.position.y);
             });
@@ -146,8 +149,10 @@ class MidiPoseModel{
     
     _convertData(){
         const formatted_test_data = this.test_data.map((pose) =>{
-            midi_array = new Array(this.index_pose).fill(0);
-            midi_array[pose.index] = 127;
+            //subtract one from index since index 0 is static pose for all poses
+            midi_array = new Array(this.index_pose - 1).fill(0);
+            // skips over index 0, index 1 starts at midi_array[0]
+            if (pose.index != 0) midi_array[pose.index - 1] = 127;
             const formatted = {
                 midi: midi_array,
                 pose: pose.pose_array,
@@ -156,16 +161,15 @@ class MidiPoseModel{
         });
 
         this.tf_test_data = tf.tidy(() => {
-            // Step 1. Shuffle the data    
             tf.util.shuffle(this.test_data);
-            // Step 2. Convert data to Tensor
+            // Convert data to Tensor
             const inputs = formatted_test_data.map(pose_midi => pose_midi.pose)
             const labels = formatted_test_data.map(pose_midi => pose_midi.midi);
 
             const inputTensor = tf.tensor2d(inputs, [inputs.length / 2 , 2]);
             const labelTensor = tf.tensor2d(labels, [labels.length, 1], 'int32');
 
-            //Step 3. Normalize the data to the range 0 - 1 using min-max scaling
+            //Normalize the data to the range 0 - 1 using min-max scaling
             const inputMax = inputTensor.max();
             const inputMin = inputTensor.min();
             const labelMax = labelTensor.max();
