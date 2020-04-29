@@ -9,7 +9,7 @@ class MidiPoseModel{
         this.capture_time = 0;
         // exposure time capturing every pose on frame in 5 secs
         //e.g 60fps 60 * 5 = 300 poses
-        this.capture_delay = 5000;
+        this.capture_duration = 5000;
         //keeps track of different poses
         this.index_pose = 0;
     }
@@ -103,8 +103,8 @@ class MidiPoseModel{
 
     _addSingleData(output_pose, current_time){
         const lapsed = current_time - this.capture_time;
-        console.log(output_pose);
-        if (lapsed < this.capture_delay) {
+        // console.log(output_pose);
+        if (lapsed < this.capture_duration) {
             let parts_array = []
             output_pose.keypoints.map( (part) => {
                 parts_array.push(part.position.x);

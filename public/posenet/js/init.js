@@ -35,6 +35,7 @@ function initVariables() {
     state.process_rate = 60; //100ms
     //model training global
     state.midiModel = new MidiPoseModel();
+    output_pose = null;
 }
 
 

@@ -40,9 +40,9 @@ async function posenetWebcamFrame(current_time) {
        // Sets a delay of 5 secs before starting capture
         if (time_lapsed < state.capture_start_delay) {
             console.log("waiting");
+            state.midiModel.setCaptureTime(current_time);
         }
         else {
-            state.midiModel.setCaptureTime(current_time);
             // loads video tag into the posenet and predicts
             output_pose = await loadPosenet(state.webcamera);
             posenetToMidi(output_pose, current_time); 
@@ -57,7 +57,7 @@ async function posenetWebcamFrame(current_time) {
     }
     
     if (state.webcamera_on) drawWebcamOntoCanvas();
-    drawPoseOntoCanvas(output_pose);
+    if (output_pose) drawPoseOntoCanvas(output_pose);
     // callback to this function creating animation loop
     window.requestAnimationFrame(posenetWebcamFrame);
 }
